@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 UI_INFO = u'''
 <ui>
@@ -85,7 +85,6 @@ class GUI(Gtk.Window):
         return uimanager
 
     def on_menu_file_open(self, widget):
-        print u'On menu file open'
         dialog = Gtk.FileChooserDialog(u'Wybierz obraz', self, Gtk.FileChooserAction.OPEN);
         dialog.add_button(Gtk.STOCK_CANCEL, 0)
         dialog.add_button(Gtk.STOCK_OK, 1)
@@ -107,6 +106,20 @@ class GUI(Gtk.Window):
         Gtk.main_quit()
 
     def on_menu_run_thresholding(self, widget):
+        import array
+        colorspace = GdkPixbuf.Colorspace.RGB
+        has_alpha = False
+        if self.source_image.get_pixbuf():
+            bits_per_sample = self.source_image.get_pixbuf().get_bits_per_sample()
+            width = self.source_image.get_pixbuf().get_width()
+            height = self.source_image.get_pixbuf().get_height()
+        else:
+            bits_per_sample = 24
+            width = 0
+            height = 0
+
+        arr = array.array('B')
+        pixbuf = GdkPixbuf.Pixbuf.new_from_data(arr, colorspace, False, bits_per_sample, width, height, width * 4)
         print u'on_menu_run_thresholding'
 
     def on_menu_run_ml_em(self, widget):
