@@ -2,25 +2,34 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-class Example(QtGui.QMainWindow):
-    
+
+class Gui(QtGui.QMainWindow):
+
     def __init__(self):
-        super(Example, self).__init__()
-        
-        self.initUI()
-        
-    def initUI(self):               
+        super(Gui, self).__init__()
+
+        self.init_ui()
+
+    def init_ui(self):
         self.init_menu_bar()
-        
-        textEdit = QtGui.QTextEdit()
-        self.setCentralWidget(textEdit)
+
+        self.mainWidget = QtGui.QWidget(self)
+        self.setCentralWidget(self.mainWidget)
+        self.mainLayout = QtGui.QHBoxLayout(self.mainWidget)
+
+        self.src_label = QtGui.QLabel()
+        self.dest_label = QtGui.QLabel()
 
         self.statusBar()
 
+        self.mainLayout.addWidget(self.src_label)
+        self.mainLayout.addWidget(self.dest_label)
+
         self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle(u'Main window')    
+        self.setWindowTitle(u'CPOO - segmentacja obrazów')
         self.show()
 
     def init_menu_bar(self):
@@ -66,26 +75,52 @@ class Example(QtGui.QMainWindow):
         run_menu.addAction(ml_em_action)
         run_menu.addAction(repeat_action)
 
-
     def open_image(self):
-        print u'open image'
-        
+        self.src_fname = QtGui.QFileDialog.getOpenFileName(self, u'Wybierz obraz do segmentacji',
+                                                           u'', u'Images (*.png *.jpg)')
+        pixmap = QtGui.QPixmap(self.src_fname)
+        self.src_label.setPixmap(pixmap)
+
     def save_image(self):
         print u'save image'
 
     def thresholding(self):
-        print u'thresholding'
-        
+        image = QtGui.QImage(self.src_fname)
+        size = image.size()
+        for i in range(size.width()):
+            for j in range(size.height()):
+                pixel_color = image.pixel(i, j)
+                qcolor = QtGui.QColor(pixel_color)
+                mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
+                new_color = QtGui.QColor("blue") if mid > 100 else QtGui.QColor("black")
+                image.setPixel(i, j, new_color.rgb())
+
+        dest_pixmap = QtGui.QPixmap.fromImage(image)
+        self.dest_label.setPixmap(dest_pixmap)
+        self.last_method = self.thresholding
+
     def ml_em(self):
-        print u'ML-EM'
+        image = QtGui.QImage(self.src_fname)
+        size = image.size()
+        for i in range(size.width()):
+            for j in range(size.height()):
+                pixel_color = image.pixel(i, j)
+                qcolor = QtGui.QColor(pixel_color)
+                mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
+                new_color = QtGui.QColor("red") if mid > 100 else QtGui.QColor("black")
+                image.setPixel(i, j, new_color.rgb())
+
+        dest_pixmap = QtGui.QPixmap.fromImage(image)
+        self.dest_label.setPixmap(dest_pixmap)
+        self.last_method = self.ml_em
 
     def repeat(self):
-        print u'repeat'
-        
+        self.last_method()
+
+
 def main():
-    
     app = QtGui.QApplication(sys.argv)
-    ex = Example()
+    gui = Gui()
     sys.exit(app.exec_())
 
 
