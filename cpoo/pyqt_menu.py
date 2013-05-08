@@ -77,12 +77,14 @@ class Gui(QtGui.QMainWindow):
 
     def open_image(self):
         self.src_fname = QtGui.QFileDialog.getOpenFileName(self, u'Wybierz obraz do segmentacji',
-                                                           u'', u'Images (*.png *.jpg)')
+                                                           u'', u'Obrazy (*.png *.jpg)')
         pixmap = QtGui.QPixmap(self.src_fname)
         self.src_label.setPixmap(pixmap)
 
     def save_image(self):
-        print u'save image'
+        self.dest_fname = QtGui.QFileDialog.getSaveFileName(self, u'Zapisz obraz po segmentacji',
+                                                            u'', u'Obrazy (*.png *.jpg)')
+        self.dest_image.save(self.dest_fname)
 
     def thresholding(self):
         image = QtGui.QImage(self.src_fname)
@@ -98,6 +100,7 @@ class Gui(QtGui.QMainWindow):
         dest_pixmap = QtGui.QPixmap.fromImage(image)
         self.dest_label.setPixmap(dest_pixmap)
         self.last_method = self.thresholding
+        self.dest_image = image
 
     def ml_em(self):
         image = QtGui.QImage(self.src_fname)
@@ -113,6 +116,7 @@ class Gui(QtGui.QMainWindow):
         dest_pixmap = QtGui.QPixmap.fromImage(image)
         self.dest_label.setPixmap(dest_pixmap)
         self.last_method = self.ml_em
+        self.dest_image = image
 
     def repeat(self):
         self.last_method()
