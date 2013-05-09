@@ -5,6 +5,7 @@ import sys
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
+import algorithms
 
 class Gui(QtGui.QMainWindow):
 
@@ -88,35 +89,17 @@ class Gui(QtGui.QMainWindow):
 
     def thresholding(self):
         image = QtGui.QImage(self.src_fname)
-        size = image.size()
-        for i in range(size.width()):
-            for j in range(size.height()):
-                pixel_color = image.pixel(i, j)
-                qcolor = QtGui.QColor(pixel_color)
-                mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
-                new_color = QtGui.QColor("blue") if mid > 100 else QtGui.QColor("black")
-                image.setPixel(i, j, new_color.rgb())
-
-        dest_pixmap = QtGui.QPixmap.fromImage(image)
+        self.dest_image = algorithms.thresholding(image)
+        dest_pixmap = QtGui.QPixmap.fromImage(self.dest_image)
         self.dest_label.setPixmap(dest_pixmap)
         self.last_method = self.thresholding
-        self.dest_image = image
 
     def ml_em(self):
         image = QtGui.QImage(self.src_fname)
-        size = image.size()
-        for i in range(size.width()):
-            for j in range(size.height()):
-                pixel_color = image.pixel(i, j)
-                qcolor = QtGui.QColor(pixel_color)
-                mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
-                new_color = QtGui.QColor("red") if mid > 100 else QtGui.QColor("black")
-                image.setPixel(i, j, new_color.rgb())
-
-        dest_pixmap = QtGui.QPixmap.fromImage(image)
+        self.dest_image = algorithms.ml_em(image)
+        dest_pixmap = QtGui.QPixmap.fromImage(self.dest_image)
         self.dest_label.setPixmap(dest_pixmap)
         self.last_method = self.ml_em
-        self.dest_image = image
 
     def repeat(self):
         self.last_method()
