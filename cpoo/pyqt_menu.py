@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import Image
 import ImageQt
 
-from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import algorithms
@@ -21,12 +19,12 @@ class Gui(QtGui.QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.mainLayout = QtGui.QHBoxLayout(self.mainWidget)
 
-        self.src_label = QtGui.QLabel()
+        self.src_image_label = QtGui.QLabel()
         self.segmented_image_label = QtGui.QLabel()
 
         self.statusBar()
 
-        self.mainLayout.addWidget(self.src_label)
+        self.mainLayout.addWidget(self.src_image_label)
         self.mainLayout.addWidget(self.segmented_image_label)
 
         self.setGeometry(300, 300, 350, 250)
@@ -72,17 +70,23 @@ class Gui(QtGui.QMainWindow):
         return action
 
     def open_image(self):
-        self.src_fname = QtGui.QFileDialog.getOpenFileName(self, u'Wybierz obraz do segmentacji',
-                                                           u'', u'Obrazy (*.png *.jpg)')
-        pixmap = QtGui.QPixmap(self.src_fname)
-        self.src_label.setPixmap(pixmap)
-        self.actions[u'thresholding'].setEnabled(True)
-        self.actions[u'ml_em'].setEnabled(True)
+        fname = QtGui.QFileDialog.getOpenFileName(self, u'Wybierz obraz do segmentacji',
+                                                  u'', u'Obrazy (*.png *.jpg)')
+        if fname != u'':
+            pixmap = QtGui.QPixmap(fname)
+            self.src_image_label.setPixmap(pixmap)
+            self.segmented_image_label.clear()
+            self.actions[u'save'].setEnabled(False)
+            self.actions[u'thresholding'].setEnabled(True)
+            self.actions[u'ml_em'].setEnabled(True)
+            self.src_image_fname = fname
 
     def save_image(self):
-        self.segmented_image_fname = QtGui.QFileDialog.getSaveFileName(self, u'Zapisz obraz po segmentacji',
-                                                                       u'', u'Obrazy (*.png *.jpg)')
-        self.segmented_image.save(self.segmented_image_fname)
+        fname = QtGui.QFileDialog.getSaveFileName(self, u'Zapisz obraz po segmentacji',
+                                                  u'', u'Obrazy (*.png *.jpg)')
+        if fname != u'':
+            self.segmented_image.save(fname)
+            self.segmented_image_fname = fname
 
     def after_algorithm(self, segmented_image):
         self.segmented_image = ImageQt.ImageQt(segmented_image)
@@ -94,12 +98,12 @@ class Gui(QtGui.QMainWindow):
         self.actions[u'repeat'].setEnabled(True)
 
     def thresholding(self):
-        new_image = algorithms.thresholding(unicode(self.src_fname))
+        new_image = algorithms.thresholding(unicode(self.src_image_fname))
         self.last_method = self.thresholding
         self.after_algorithm(new_image)
 
     def ml_em(self):
-        new_image = algorithms.ml_em(unicode(self.src_fname))
+        new_image = algorithms.ml_em(unicode(self.src_image_fname))
         self.last_method = self.ml_em
         self.after_algorithm(new_image)
 

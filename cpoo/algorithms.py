@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import Image
-import ImageQt
 import ImageColor
 
-from copy import deepcopy
-from PyQt4 import QtCore
-from PyQt4 import QtGui
 
 BLUE = ImageColor.getrgb(u'Blue')
 BLACK = ImageColor.getrgb(u'Black')
