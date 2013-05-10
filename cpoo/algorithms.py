@@ -1,30 +1,43 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import Image
+import ImageQt
+import ImageColor
+
 from copy import deepcopy
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-def thresholding(image):
-    size = image.size()
-    for i in range(size.width()):
-        for j in range(size.height()):
-            pixel_color = image.pixel(i, j)
-            qcolor = QtGui.QColor(pixel_color)
-            mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
-            new_color = QtGui.QColor(u'blue') if mid > 100 else QtGui.QColor(u'black')
-            image.setPixel(i, j, new_color.rgb())
+BLUE = ImageColor.getrgb(u'Blue')
+BLACK = ImageColor.getrgb(u'Black')
+RED = ImageColor.getrgb(u'Red')
+
+
+def thresholding(file_name):
+    image = Image.open(file_name)
+    width, height = image.size
+    for i in range(width):
+        for j in range(height):
+            pixel = image.getpixel((i, j))
+            avg_color = sum(pixel[:3]) / 3
+            new_color = BLUE if avg_color > 100 else BLACK
+            new_pixel = new_color + pixel[3:]
+            image.putpixel((i, j), new_pixel)
 
     return image
 
-def ml_em(image):
-    size = image.size()
-    for i in range(size.width()):
-        for j in range(size.height()):
-            pixel_color = image.pixel(i, j)
-            qcolor = QtGui.QColor(pixel_color)
-            mid = (qcolor.red() + qcolor.green() + qcolor.blue()) / 3
-            new_color = QtGui.QColor(u'red') if mid > 100 else QtGui.QColor(u'black')
-            image.setPixel(i, j, new_color.rgb())
+
+def ml_em(file_name):
+    image = Image.open(file_name)
+    width, height = image.size
+    for i in range(width):
+        for j in range(height):
+            pixel = image.getpixel((i, j))
+            avg_color = sum(pixel[:3]) / 3
+            new_color = RED if avg_color > 100 else BLACK
+            new_pixel = new_color + pixel[3:]
+            image.putpixel((i, j), new_pixel)
 
     return image
+
