@@ -7,6 +7,8 @@ import ImageQt
 from PyQt4 import QtGui
 
 import algorithms
+from thresholding_dialog_ui import Ui_ThresholdingDialog
+from ml_em_dialog_ui import Ui_MLEMDialog
 
 class Gui(QtGui.QMainWindow):
 
@@ -88,27 +90,56 @@ class Gui(QtGui.QMainWindow):
             self.segmented_image.save(fname)
             self.segmented_image_fname = fname
 
-    def after_algorithm(self, segmented_image):
-        self.segmented_image = ImageQt.ImageQt(segmented_image)
+    def thresholding(self):
+        dialog = ThresholdingDialog()
+        if dialog.exec_():
+            dialog_args = dialog.get_values()
+            self.execute_algorithm(algorithms.thresholding, dialog_args)
+
+    def ml_em(self):
+        dialog = MLEMDialog()
+        if dialog.exec_():
+            dialog_args = dialog.get_values()
+            self.execute_algorithm(algorithms.ml_em, dialog_args)
+
+    def execute_algorithm(self, alg_fun, args):
+        fname = unicode(self.src_image_fname)
+
+        new_image = alg_fun(fname, *args)
+
+        self.segmented_image = ImageQt.ImageQt(new_image)
         # if something bad happens here, try to uncomment
         #self.segmented_image = QtGui.QImage(self.segmented_image)
         segmented_image_pixmap = QtGui.QPixmap.fromImage(self.segmented_image)
         self.segmented_image_label.setPixmap(segmented_image_pixmap)
-        self.actions[u'save'].setEnabled(True)
-        self.actions[u'repeat'].setEnabled(True)
 
-    def thresholding(self):
-        new_image = algorithms.thresholding(unicode(self.src_image_fname))
-        self.last_method = self.thresholding
-        self.after_algorithm(new_image)
+        if not self.actions[u'save'].isEnabled():
+            self.actions[u'save'].setEnabled(True)
+            self.actions[u'repeat'].setEnabled(True)
 
-    def ml_em(self):
-        new_image = algorithms.ml_em(unicode(self.src_image_fname))
-        self.last_method = self.ml_em
-        self.after_algorithm(new_image)
+        self.prev_algorithm = alg_fun
+        self.prev_args = args
 
     def repeat(self):
-        self.last_method()
+        self.execute_algorithm(self.prev_algorithm, self.prev_args)
+
+
+class ThresholdingDialog(QtGui.QDialog, Ui_ThresholdingDialog):
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def get_values(self):
+        return (self.thresholdsSpinBox.value(), )
+
+
+class MLEMDialog(QtGui.QDialog, Ui_MLEMDialog):
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def get_values(self):
+        return (unicode(self.arg1LineEdit.text()), self.arg2SpinBox.value(), )
 
 
 def main():
