@@ -22,14 +22,13 @@ class Gui(QtGui.QMainWindow):
         self.mainLayout = QtGui.QHBoxLayout(self.mainWidget)
 
         self.src_image_label = QtGui.QLabel()
-        self.segmented_image_label = QtGui.QLabel()
 
         self.statusBar()
 
         self.mainLayout.addWidget(self.src_image_label)
-        self.mainLayout.addWidget(self.segmented_image_label)
+        self.mainLayout.setContentsMargins(5, 5, 5, 5)
 
-        self.setGeometry(300, 300, 350, 250)
+        self.setGeometry(300, 300, 250, 250)
         self.setWindowTitle(u'CPOO - segmentacja obrazów')
         self.show()
 
@@ -40,10 +39,8 @@ class Gui(QtGui.QMainWindow):
 
         open_image_action = self.create_action(u'Otwórz obraz', u'Ctrl+O',
                                                u'Wczytaj nowy obraz', self.open_image)
-        save_image_action = self.create_action(u'Zapisz obraz po segmentacji', u'Ctrl+S',
-                                               u'Zapisz przetworzony obraz', self.save_image, False)
         exit_action = self.create_action(u'Exit', u'Ctrl+Q', u'Zakończ program', self.close)
-        file_menu.addActions([open_image_action, save_image_action, exit_action])
+        file_menu.addActions([open_image_action, exit_action])
 
         thresholding_action = self.create_action(u'Progowanie', u'Ctrl+P', u'Wykonaj algorytm progowania',
                                                  self.thresholding, False)
@@ -56,7 +53,6 @@ class Gui(QtGui.QMainWindow):
 
         self.actions = {
             u'open': open_image_action,
-            u'save': save_image_action,
             u'exit': exit_action,
             u'thresholding': thresholding_action,
             u'ml_em': ml_em_action,
@@ -77,18 +73,9 @@ class Gui(QtGui.QMainWindow):
         if fname != u'':
             pixmap = QtGui.QPixmap(fname)
             self.src_image_label.setPixmap(pixmap)
-            self.segmented_image_label.clear()
-            self.actions[u'save'].setEnabled(False)
             self.actions[u'thresholding'].setEnabled(True)
             self.actions[u'ml_em'].setEnabled(True)
             self.src_image_fname = fname
-
-    def save_image(self):
-        fname = QtGui.QFileDialog.getSaveFileName(self, u'Zapisz obraz po segmentacji',
-                                                  u'', u'Obrazy (*.png *.jpg)')
-        if fname != u'':
-            self.segmented_image.save(fname)
-            self.segmented_image_fname = fname
 
     def thresholding(self):
         dialog = ThresholdingDialog()
@@ -106,16 +93,7 @@ class Gui(QtGui.QMainWindow):
         fname = unicode(self.src_image_fname)
 
         new_image = alg_fun(fname, *args)
-
-        self.segmented_image = ImageQt.ImageQt(new_image)
-        # if something bad happens here, try to uncomment
-        #self.segmented_image = QtGui.QImage(self.segmented_image)
-        segmented_image_pixmap = QtGui.QPixmap.fromImage(self.segmented_image)
-        self.segmented_image_label.setPixmap(segmented_image_pixmap)
-
-        if not self.actions[u'save'].isEnabled():
-            self.actions[u'save'].setEnabled(True)
-            self.actions[u'repeat'].setEnabled(True)
+        self.actions[u'repeat'].setEnabled(True)
 
         self.prev_algorithm = alg_fun
         self.prev_args = args
