@@ -36,3 +36,9 @@ nosetests.xml
 
 # gvim files
 *.swp
+
+/Dokumentacja_projektu/Dokumentacja_projektu.synctex.gz
+
+/.settings/org.eclipse.core.resources.prefs
+/Dokumentacja_projektu/Dokumentacja_projektu.aux
+/Dokumentacja_projektu/Dokumentacja_projektu.log
