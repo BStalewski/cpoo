@@ -87,7 +87,7 @@ class Gui(QtGui.QMainWindow):
         dialog = MLEMDialog()
         if dialog.exec_():
             dialog_args = dialog.get_values()
-            self.execute_algorithm(algorithms.ml_em, dialog_args)
+            self.execute_algorithm(algorithms.ml_em_thresholding, dialog_args)
 
     def execute_algorithm(self, alg_fun, args):
         fname = unicode(self.src_image_fname)
