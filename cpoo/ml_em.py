@@ -118,7 +118,7 @@ def update_params(image, means, covs, alphas, features):
 
         for i in range(width):
             for j in range(height):
-
+                print 'abc'
 
 
 def update_stop_param(image, means, covs, alphas, features):
