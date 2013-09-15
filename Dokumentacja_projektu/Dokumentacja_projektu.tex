@@ -45,13 +45,19 @@ Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segment
 
 \subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z dwoma skupiskami}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.3, clip]{img/01.jpg}
-	\caption[]
-  {Rysunek wejściowy, przedstawiający na pierwszym planie kwiat.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/01.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:1}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/01_region_01.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji.}\label{fig:2}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/01_region_02.jpg}
+  \caption{Region drugi (z dwóch) po segmentacji.}\label{fig:3}
+\endminipage
 \end{figure}
 
 \FloatBarrier
@@ -65,36 +71,37 @@ Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segment
 
 \FloatBarrier
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.3, clip]{img/01_region_01.jpg}
-	\caption[]
-  {Region pierwszy (z dwóch) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.3, clip]{img/01_region_02.jpg}
-	\caption[]
-  {Region drugi (z dwóch) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
 \subsection{Test algorytmu Otsu --- wybór czterech progów przy histogramie z siedmioma skupiskami}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02.jpg}
-	\caption[]
-  {Rysunek wejściowy, przedstawiający na pierwszym planie postać.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:4}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02_region_01.jpg}
+  \caption{Region pierwszy (z pięciu) po segmentacji.}\label{fig:5}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02_region_02.jpg}
+  \caption{Region drugi (z pięciu) po segmentacji.}\label{fig:6}
+\endminipage
 \end{figure}
 
-\FloatBarrier
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02_region_03.jpg}
+  \caption{Region trzeci (z pięciu) po segmentacji.}\label{fig:7}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02_region_04.jpg}
+  \caption{Region czwarty (z pięciu) po segmentacji.}\label{fig:8}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/02_region_05.jpg}
+  \caption{Region piąty (z pięciu) po segmentacji.}\label{fig:9}
+\endminipage
+\end{figure}
 
 \begin{figure}[h!]
   \centering
@@ -103,198 +110,87 @@ Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segment
   {Histogram rysunku wejściowego z zaznaczonymi czteroma progami, które zostały dobrane przez algorytm Otsu. Jak widać, progi zostały dobrane dość dobrze, ponieważ --- po pierwsze --- znajdują się mniej więcej na środku pomiędzy skupiskami i --- po drugie --- są od siebie oddalone w mniej więcej równych odstępach.}
 \end{figure}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02_region_01.jpg}
-	\caption[]
-  {Region pierwszy (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02_region_02.jpg}
-	\caption[]
-  {Region drugi (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02_region_03.jpg}
-	\caption[]
-  {Region trzeci (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02_region_04.jpg}
-	\caption[]
-  {Region czwarty (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/02_region_05.jpg}
-	\caption[]
-  {Region piąty (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
 \section{Testy algorytmu ML-EM}
 
 \subsection{Test algorytmu ML-EM --- wybór pięciu obszarów}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images.jpg}
-	\caption[]
-  {Rysunek wejściowy, przedstawiający na pierwszym planie zwierzę.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:10}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images_k5_0.jpg}
+  \caption{Region pierwszy (z pięciu) po segmentacji.}\label{fig:11}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images_k5_1.jpg}
+  \caption{Region drugi (z pięciu) po segmentacji.}\label{fig:12}
+\endminipage
 \end{figure}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images_k5_0.jpg}
-	\caption[]
-  {Region pierwszy (z pięciu) po segmentacji.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images_k5_2.jpg}
+  \caption{Region trzeci (z pięciu) po segmentacji.}\label{fig:10}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images_k5_3.jpg}
+  \caption{Region czwarty (z pięciu) po segmentacji.}\label{fig:11}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/images_k5_4.jpg}
+  \caption{Region piąty (z pięciu) po segmentacji.}\label{fig:12}
+\endminipage
 \end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images_k5_1.jpg}
-	\caption[]
-  {Region drugi (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images_k5_2.jpg}
-	\caption[]
-  {Region trzeci (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images_k5_3.jpg}
-	\caption[]
-  {Region czwarty (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/images_k5_4.jpg}
-	\caption[]
-  {Region piąty (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
 
 \subsection{Test algorytmu ML-EM --- wybór dwóch obszarów}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=33.0, clip]{img/ship.jpg}
-	\caption[]
-  {Rysunek wejściowy, przedstawiający na pierwszym planie statek.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:13}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k2_0.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji.}\label{fig:14}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k2_1.jpg}
+  \caption{Region drugi (z dwóch) po segmentacji.}\label{fig:15}
+\endminipage
 \end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k2_0.jpg}
-	\caption[]
-  {Region pierwszy (z dwóch) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k2_1.jpg}
-	\caption[]
-  {Region drugi (z dwóch) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
 
 \subsection{Test algorytmu ML-EM --- wybór pięciu obszarów}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=33.0, clip]{img/ship.jpg}
-	\caption[]
-  {Rysunek wejściowy, przedstawiający na pierwszym planie statek.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:16}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k5_0.jpg}
+  \caption{Region pierwszy (z pięciu) po segmentacji.}\label{fig:17}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k5_1.jpg}
+  \caption{Region drugi (z pięciu) po segmentacji.}\label{fig:18}
+\endminipage
 \end{figure}
 
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k5_0.jpg}
-	\caption[]
-  {Region pierwszy (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k5_1.jpg}
-	\caption[]
-  {Region drugi (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k5_2.jpg}
-	\caption[]
-  {Region trzeci (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k5_3.jpg}
-	\caption[]
-  {Region czwarty (z pięciu) po segmentacji.}
-\end{figure}
-
-\FloatBarrier
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=.8, clip]{img/ship_k5_4.jpg}
-	\caption[]
-  {Region piąty (z pięciu) po segmentacji.}
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k5_2.jpg}
+  \caption{Region trzeci (z pięciu) po segmentacji.}\label{fig:19}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k5_3.jpg}
+  \caption{Region czwarty (z pięciu) po segmentacji.}\label{fig:20}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/ship_k5_4.jpg}
+  \caption{Region piąty (z pięciu) po segmentacji.}\label{fig:21}
+\endminipage
 \end{figure}
 
 \FloatBarrier
