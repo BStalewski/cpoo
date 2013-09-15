@@ -3,10 +3,11 @@
 
 import Image
 import ImageColor
-import random
 
 import math
 import numpy as np
+import os
+import random
 
 from datetime import datetime
 
@@ -14,6 +15,11 @@ from datetime import datetime
 BLUE = ImageColor.getrgb(u'Blue')
 BLACK = ImageColor.getrgb(u'Black')
 RED = ImageColor.getrgb(u'Red')
+
+
+MIN_ITERATIONS = 5
+MAX_ITERATIONS = 20
+MIN_ACCEPTABLE_GROWTH = 0.01
 
 
 def ml_em(file_name, K=5):
@@ -26,43 +32,62 @@ def ml_em(file_name, K=5):
     N = height * width
     u, alpha, sigma = init_distribution_params(X, k, False)
     Ltab = []
-    print '1111111111111111111111111111'
-    print 'u:', u
-    print 'alpha:', alpha
-    print 'sigma:', sigma
-    print '2222222222222222222222222222'
-    f, p = calculate_prob_values(X, u, alpha, sigma)
-    print '3333333333333333333333333333'
-    Ltab = add_log_likelihood(alpha, f, Ltab)
-    print '4444444444444444444444444444'
-    stop = should_stop(Ltab)
-    print 'stop?:', stop
-    after = datetime.now()
-    print 'f:', f
-    print 'fmax:', f.max()
-    print 'fmin:', f.min()
-    print 'f[0][79][80]:', f[0][79][80]
-    print 'npm[0][79][80]:', norm_pdf_multivariate(X[79][80], u[0], np.matrix(sigma[0]))
-    print 'f[1][79][80]:', f[1][79][80]
-    print 'npm[1][79][80]:', norm_pdf_multivariate(X[79][80], u[1], np.matrix(sigma[1]))
-    print 'f[0][0][0]:', f[0][0][0]
-    print 'npm[0][0][0]:', norm_pdf_multivariate(X[0][0], u[0], np.matrix(sigma[0]))
-    print p
-    p_sum = np.sum(p, 0)
-    print 'np.max(p_sum):', np.max(p_sum)
-    print 'np.min(p_sum):', np.min(p_sum)
-    print '5555555555555555555555555555'
-    u, alpha, sigma = update(X, p)
-    print 'After update:'
-    print 'u:', u
-    print 'alpha:', alpha
-    print 'sigma:', sigma
-    print '6666666666666666666666666666'
-    rating = calculate_rating(Ltab[-1], k, d, N)
-    print 'rating:', rating
+    stop = False
+    #print '1111111111111111111111111111'
+    #print 'u:', u
+    #print 'alpha:', alpha
+    #print 'sigma:', sigma
+    #print '2222222222222222222222222222'
+    max_iterations = MAX_ITERATIONS
+    for i in range(0, max_iterations + 1):
+        print 'Iteracja:', i
+        f, p = calculate_prob_values(X, u, alpha, sigma)
+        #print '3333333333333333333333333333'
+        Ltab = add_log_likelihood(alpha, f, Ltab)
+        #print '4444444444444444444444444444'
+        stop = should_stop(Ltab)
+        #print 'stop?:', stop
+        if stop:
+            print 'Stop w iteracji:', i
+            break
+        #print 'f:', f
+        #print 'fmax:', f.max()
+        #print 'fmin:', f.min()
+        #print 'f[0][79][80]:', f[0][79][80]
+        #print 'npm[0][79][80]:', norm_pdf_multivariate(X[79][80], u[0], np.matrix(sigma[0]))
+        #print 'f[1][79][80]:', f[1][79][80]
+        #print 'npm[1][79][80]:', norm_pdf_multivariate(X[79][80], u[1], np.matrix(sigma[1]))
+        #print 'f[0][0][0]:', f[0][0][0]
+        #print 'npm[0][0][0]:', norm_pdf_multivariate(X[0][0], u[0], np.matrix(sigma[0]))
+        #print p
+        #p_sum = np.sum(p, 0)
+        #print 'np.max(p_sum):', np.max(p_sum)
+        #print 'np.min(p_sum):', np.min(p_sum)
+        #print '5555555555555555555555555555'
+        u, alpha, sigma = update(X, p)
+        #print 'After update:'
+        #print 'u:', u
+        #print 'alpha:', alpha
+        #print 'sigma:', sigma
+        #print '6666666666666666666666666666'
+        rating = calculate_rating(Ltab[-1], k, d, N)
+        print 'rating:', rating
+        p_best_regions = best_regions(p)
+        nonzero_count = np.count_nonzero(p_best_regions)
+        print 'N:', N
+        print 'nonzero:', nonzero_count
+        print 'zero:', N - nonzero_count
 
+    after = datetime.now()
     print 'diff:', after - now
-    return image
+
+    head, tail = os.path.split(file_name)
+    tail_parts = tail.rsplit('.')
+    tail_parts.insert(1, '_k{k}.'.format(k=k))
+    new_tail = ''.join(tail_parts)
+    out_file_name = os.path.join(head, new_tail)
+    result_image = make_result_image(image, p_best_regions, out_file_name, k)
+    return result_image
 
 
 # image -> X
@@ -212,21 +237,22 @@ def calculate_prob_density(X, u, sigma):
         if d == len(u[0]) and (d, d) == sigma[0].shape:
             det = np.linalg.det(sigma[i])
             if det == 0:
+                print sigma[i]
                 raise NameError("The covariance matrix can't be singular")
             norm_const = 1.0 / (math.pow((2 * np.pi), float(d)/2) * math.pow(det, 1.0 / 2))
             inv = np.matrix(sigma[i]).I
-            if i == 0:
-                print 'det:', det
-                print 'norm_const:', norm_const
-                print 'inv:', inv
+            #if i == 0:
+            #    print 'det:', det
+            #    print 'norm_const:', norm_const
+            #    print 'inv:', inv
             for ind_h in range(height):
                 for ind_w in range(width):
                     x_mu = np.matrix(X[ind_h][ind_w] - u[i])
                     result = math.pow(math.e, -0.5 * (x_mu * inv * x_mu.T))
-                    if i == 0 and ind_h == 0 and ind_w == 0:
-                        print 'x_mu:', x_mu
-                        print 'pow:', -0.5 * (x_mu * inv * x_mu.T)
-                        print 'result:', result
+                    #if i == 0 and ind_h == 0 and ind_w == 0:
+                    #    print 'x_mu:', x_mu
+                    #    print 'pow:', -0.5 * (x_mu * inv * x_mu.T)
+                    #    print 'result:', result
                     f[i][ind_h][ind_w] = result
             f[i] *= norm_const
         else:
@@ -266,15 +292,15 @@ def calculate_prob(X, alpha, f):
 
 # alpha, f, Ltab -> Ltab_new
 def add_log_likelihood(alpha, f, Ltab):
-    before = datetime.now()
+    #before = datetime.now()
     f_total = calculate_total_prob_density(alpha, f)
-    after = datetime.now()
-    print 'f_total:', f_total
-    print 'test time:', after - before
+    #after = datetime.now()
+    #print 'f_total:', f_total
+    #print 'test time:', after - before
     L = calculate_log_likelihood(f_total)
-    print 'L:', L
+    #print 'L:', L
     Ltab_new = update_log_likelihoods(Ltab, L)
-    print 'Ltab -> Ltab_new', Ltab, '->', Ltab_new
+    #print 'Ltab -> Ltab_new', Ltab, '->', Ltab_new
     return Ltab_new
 
 
@@ -302,11 +328,11 @@ def update_log_likelihoods(Ltab, L):
 
 # Ltab -> True|False
 def should_stop(Ltab):
-    if len(Ltab) < 11:
+    if len(Ltab) < MIN_ITERATIONS + 1:
         return False
     else:
-        zipped_last_growths = zip(Ltab[-10:], Ltab[-11:-1])
-        low_growths = [((next - prev) / prev) < 0.01 for next, prev in zipped_last_growths]
+        zipped_last_growths = zip(Ltab[-MIN_ITERATIONS:], Ltab[-(MIN_ITERATIONS+1):-1])
+        low_growths = [((next - prev) / prev) < MIN_ACCEPTABLE_GROWTH for next, prev in zipped_last_growths]
         return any(low_growths)
 
 
@@ -355,8 +381,6 @@ def update_covariance_matrices(X, u, p):
                 # na pierwszy argument
                 result = p[i][ind_h][ind_w] * (x_u.T * x_u)
                 sigma[i] += result
-        print 'sigma[i].shape:', sigma[i].shape
-        print 'p_sum.shape:', p_sum.shape
         sigma[i] /= p_sum
 
     return sigma
@@ -377,4 +401,27 @@ def calculate_mk(k, d):
 
 # p -> p_best_regions
 def best_regions(p):
-    pass
+    k, height, width = p.shape
+    p_best_regions_int32 = np.argmax(p, 0)
+    p_best_regions_int8 = np.asarray(p_best_regions_int32, dtype=np.uint8)
+    p_best_regions = p_best_regions_int8
+    return p_best_regions
+
+
+# image, p_best_regions, file_name, k -> result_image
+def make_result_image(image, p_best_regions, file_name, k):
+    height, width = p_best_regions.shape
+    #image = Image.open('images.jpg')
+    image_data_array = np.asarray(image) # a is readonly
+    print 'p_best_regions.shape:', p_best_regions.shape
+    tmp_array = np.empty((height, width, image_data_array.shape[2]), dtype=np.uint8)
+    for index in range(image_data_array.shape[2]):
+        tmp_array[:,:,index] = p_best_regions
+
+    #result_image_data_array = image_data_array * tmp_array
+    tmp_array *= (250 / k)
+    result_image_data_array = tmp_array
+    image = Image.fromarray(result_image_data_array)
+    image.save(file_name)
+
+    return image
