@@ -20,19 +20,38 @@ RED = ImageColor.getrgb(u'Red')
 def ml_em(file_name, K=5):
     image = Image.open(file_name)
     k = 2
+    fscale = 10
     now = datetime.now()
-    X = init_features(image)
+    X = init_features(image, fscale)
     u, alpha, sigma = init_distribution_params(X, k, False)
+    Ltab = []
     print 'u:', u
     print 'alpha:', alpha
     print 'sigma:', sigma
+    f, p = calculate_prob_values(X, u, alpha, sigma)
+    Ltab = add_log_likelihood(alpha, f, Ltab)
+    stop = should_stop(Ltab)
+    print 'stop?:', stop
     after = datetime.now()
+    print 'f:', f
+    print 'fmax:', f.max()
+    print 'fmin:', f.min()
+    print 'f[0][79][80]:', f[0][79][80]
+    print 'npm[0][79][80]:', norm_pdf_multivariate(X[79][80], u[0], np.matrix(sigma[0]))
+    print 'f[1][79][80]:', f[1][79][80]
+    print 'npm[1][79][80]:', norm_pdf_multivariate(X[79][80], u[1], np.matrix(sigma[1]))
+    print 'f[0][0][0]:', f[0][0][0]
+    print 'npm[0][0][0]:', norm_pdf_multivariate(X[0][0], u[0], np.matrix(sigma[0]))
+    print p
+    p_sum = np.sum(p, 0)
+    print 'np.max(p_sum):', np.max(p_sum)
+    print 'np.min(p_sum):', np.min(p_sum)
     print 'diff:', after - now
     return image
 
 
 # image -> X
-def init_features(image, d=4):
+def init_features(image, fscale, d=4):
     width, height = image.size
     X = np.empty([height, width, d])
     for ind_h in range(height):
@@ -40,7 +59,7 @@ def init_features(image, d=4):
             pixel = image.getpixel((ind_w, ind_h))
             r_g = pixel[0] - pixel[1]
             r_b = pixel[0] - pixel[2]
-            X[ind_h][ind_w] = [ind_w, ind_h, r_g, r_b]
+            X[ind_h][ind_w] = [ind_w / fscale, ind_h / fscale, r_g / fscale, r_b / fscale]
 
     return X
 
@@ -163,17 +182,117 @@ def init_covariance_matrices(d, k):
 
 # X, u, alpha, sigma -> f, p
 def calculate_prob_values(X, u, alpha, sigma):
-    pass
+    f = calculate_prob_density(X, u, sigma)
+    p = calculate_prob(X, alpha, f)
+    return f, p
 
 
-# alpha, f, Ltab -> Ltab
+# X, u, sigma -> f
+# from: http://stackoverflow.com/questions/11615664/multivariate-normal-density-in-python
+def calculate_prob_density(X, u, sigma):
+    height, width, d = X.shape
+    K = u.shape[0]
+    f = np.empty([K, height, width])
+    for i in range(K):
+        if d == len(u[0]) and (d, d) == sigma[0].shape:
+            det = np.linalg.det(sigma[i])
+            if det == 0:
+                raise NameError("The covariance matrix can't be singular")
+            norm_const = 1.0 / (math.pow((2 * np.pi), float(d)/2) * math.pow(det, 1.0 / 2))
+            inv = np.matrix(sigma[i]).I
+            if i == 0:
+                print 'det:', det
+                print 'norm_const:', norm_const
+                print 'inv:', inv
+            for ind_h in range(height):
+                for ind_w in range(width):
+                    x_mu = np.matrix(X[ind_h][ind_w] - u[i])
+                    result = math.pow(math.e, -0.5 * (x_mu * inv * x_mu.T))
+                    if i == 0 and ind_h == 0 and ind_w == 0:
+                        print 'x_mu:', x_mu
+                        print 'pow:', -0.5 * (x_mu * inv * x_mu.T)
+                        print 'result:', result
+                    f[i][ind_h][ind_w] = result
+            f[i] *= norm_const
+        else:
+            raise NameError("The dimensions of the input don't match")
+
+    return f
+
+
+def norm_pdf_multivariate(x, mu, sigma):
+    size = len(x)
+    if size == len(mu) and (size, size) == sigma.shape:
+        det = np.linalg.det(sigma)
+        if det == 0:
+            raise NameError("The covariance matrix can't be singular")
+
+        norm_const = 1.0 / (math.pow((2 * np.pi), float(size)/2) * math.pow(det, 1.0 / 2))
+        x_mu = np.matrix(x - mu)
+        inv = sigma.I
+        result = math.pow(math.e, -0.5 * (x_mu * inv * x_mu.T))
+        return norm_const * result
+    else:
+        raise NameError("The dimensions of the input don't match")
+
+
+# X, alpha, f -> p
+def calculate_prob(X, alpha, f):
+    height, width, d = X.shape
+    K = alpha.shape[0]
+    p = np.empty([K, height, width])
+    for ind_h in range(height):
+        for ind_w in range(width):
+            p[:, ind_h, ind_w] = alpha * f[:, ind_h, ind_w]
+            p[:, ind_h, ind_w] /= np.sum(p[:, ind_h, ind_w])
+
+    return p
+
+
+# alpha, f, Ltab -> Ltab_new
 def add_log_likelihood(alpha, f, Ltab):
-    pass
+    before = datetime.now()
+    f_total = calculate_total_prob_density(alpha, f)
+    after = datetime.now()
+    print 'f_total:', f_total
+    print 'test time:', after - before
+    L = calculate_log_likelihood(f_total)
+    print 'L:', L
+    Ltab_new = update_log_likelihoods(Ltab, L)
+    print 'Ltab -> Ltab_new', Ltab, '->', Ltab_new
+    return Ltab_new
+
+
+# alpha, f -> f_total
+def calculate_total_prob_density(alpha, f):
+    alpha_tab = np.empty([len(alpha), 1, 1])
+    alpha_tab[:,0,0] = alpha
+    f_total = np.sum(np.multiply(f, alpha_tab), 0)
+
+    return f_total
+
+
+# f_total -> L
+def calculate_log_likelihood(f_total):
+    L = np.sum(np.log(f_total))
+    return L
+
+
+# Ltab, L -> Ltab_new
+def update_log_likelihoods(Ltab, L):
+    Ltab_new = Ltab[:]
+    Ltab_new.append(L)
+    return Ltab_new
 
 
 # Ltab -> True|False
 def should_stop(Ltab):
-    pass
+    if len(Ltab) < 11:
+        return False
+    else:
+        zipped_last_growths = zip(Ltab[-10:], Ltab[-11:-1])
+        low_growths = [((next - prev) / prev) < 0.01 for next, prev in zipped_last_growths]
+        return any(low_growths)
 
 
 # X, p -> u_new, alpha_new, sigma_new
