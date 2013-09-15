@@ -41,6 +41,14 @@ Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segment
 	\item algorytmu ML-EM (ang. Maximum Likelihood Estimation Maximization), wykonującego segmentację przez klasteryzację. 
 \end{itemize}
 
+\section{Krótki opis algorytmów}
+
+\subsection{Algorytm Otsu}
+
+Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, stanowi przykład progowania globalnego, w którym znalezione wartości progów są optymalne pod względem minimalizacji wariancji wewnątrzklasowej lub maksymalizacji wariancji międzyklasowej. Metoda Otsu osiąga dobre rezultaty na przykład dla obrazów o histogramach bimodalnych, czyli takich, gdzie możliwa jest reprezentacja histogramu przez dwa zachodzące na siebie rozkłady normalne o różnych wartościach średnich.
+
+\subsection{Algorytm ML-EM}
+
 \section{Testy algorytmu Otsu}
 
 \subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z dwoma skupiskami}
@@ -60,16 +68,52 @@ Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segment
 \endminipage
 \end{figure}
 
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/01_correct_segmentation.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji idealnej.}\label{fig:3_prim}
+\endminipage\hfill
+\end{figure}
+
 \FloatBarrier
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=.3, clip]{img/01_histogram.jpg}
 	\caption[]
-  {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg został dobrany dość dobrze, ponieważ znajduje się na środku pomiędzy skupiskiem jasnych pikseli (pikseli pierwszego planu) i skupiskiem ciemnych pikseli (pikseli tła).}
+  {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Na podstawie histogramu da się zauważyć, że obraz wejściowy jest obrazem bimodalnym, czyli składającym się z pikseli, których jasności można zgrupować w dwóch skupiskach --- skupisku pikseli ciemnych (pikseli tła) i jasnych (pikseli pierwszego planu). Jak widać, próg (o wartości ok. 130) został dobrany dość dobrze, ponieważ znajduje się na środku pomiędzy oboma skupiskami.}
 \end{figure}
 
-\FloatBarrier
+\subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z siedmioma skupiskami}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/03.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:41}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/03_region_01.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji.}\label{fig:51}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/03_region_02.jpg}
+  \caption{Region drugi (z dwóch) po segmentacji.}\label{fig:61}
+\endminipage
+\end{figure}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/03_correct_segmentation.jpg}
+  \caption{Region drugi (z dwóch) po segmentacji idealnej.}\label{fig:411}
+\endminipage\hfill
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=.3, clip]{img/03_histogram.jpg}
+	\caption[]
+  {Histogram rysunku wejściowego z zaznaczonym jednym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg został dobrany dość dobrze, ponieważ dzieli histogram na mniej więcej równe połowy pod względem ilości piseli znajdujących się po lewej i prawej stronie względem progu.}
+\end{figure}
 
 \subsection{Test algorytmu Otsu --- wybór czterech progów przy histogramie z siedmioma skupiskami}
 
