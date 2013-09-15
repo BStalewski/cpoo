@@ -154,6 +154,39 @@ Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, s
   {Histogram rysunku wejściowego z zaznaczonymi czteroma progami, które zostały dobrane przez algorytm Otsu. Jak widać, progi zostały dobrane dość dobrze, ponieważ --- po pierwsze --- znajdują się mniej więcej na środku pomiędzy skupiskami i --- po drugie --- są od siebie oddalone w mniej więcej równych odstępach.}
 \end{figure}
 
+\subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z jednym skupiskiem}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/04.jpg}
+  \caption{Rysunek wejściowy.}\label{fig:111}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/04_region_01.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji.}\label{fig:211}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/04_region_02.jpg}
+  \caption{Region drugi (z dwóch) po segmentacji.}\label{fig:311}
+\endminipage
+\end{figure}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/04_correct_segmentation.jpg}
+  \caption{Region pierwszy (z dwóch) po segmentacji idealnej.}\label{fig:3_prim}
+\endminipage\hfill
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=.3, clip]{img/04_histogram.jpg}
+	\caption[]
+  {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 150) został dobrany dość dobrze, ponieważ oddziela piksele najciemniejsze od najjaśniejszych.}
+\end{figure}
+
 \section{Testy algorytmu ML-EM}
 
 \subsection{Test algorytmu ML-EM --- wybór pięciu obszarów}
