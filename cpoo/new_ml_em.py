@@ -58,7 +58,7 @@ MIN_ACCEPTABLE_GROWTH = 0.01  # minimalny akceptowalny wzrost, ktory
 
 def ml_em(file_name, K=5):
     image = Image.open(file_name)
-    k = 5
+    k = 2
     fscale = 0.1
     now = datetime.now()
     # Inicjalizacja parametrów: cechy X, wartości średnie u,
@@ -117,10 +117,10 @@ def ml_em(file_name, K=5):
 
 
 # image -> X
-def init_features(image, fscale, d=4):
+def init_features(image, fscale):
     ''' Wyznaczenie cech.'''
     width, height = image.size
-    X = np.empty([height, width, d])
+    X = np.empty([height, width, 4])
     for ind_h in range(height):
         for ind_w in range(width):
             pixel = image.getpixel((ind_w, ind_h))
