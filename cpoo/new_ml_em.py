@@ -7,7 +7,6 @@ import random
 
 import math
 import numpy as np
-#from numpy import *
 
 from datetime import datetime
 
@@ -23,13 +22,19 @@ def ml_em(file_name, K=5):
     fscale = 10
     now = datetime.now()
     X = init_features(image, fscale)
+    height, width, d = X.shape
+    N = height * width
     u, alpha, sigma = init_distribution_params(X, k, False)
     Ltab = []
+    print '1111111111111111111111111111'
     print 'u:', u
     print 'alpha:', alpha
     print 'sigma:', sigma
+    print '2222222222222222222222222222'
     f, p = calculate_prob_values(X, u, alpha, sigma)
+    print '3333333333333333333333333333'
     Ltab = add_log_likelihood(alpha, f, Ltab)
+    print '4444444444444444444444444444'
     stop = should_stop(Ltab)
     print 'stop?:', stop
     after = datetime.now()
@@ -46,6 +51,16 @@ def ml_em(file_name, K=5):
     p_sum = np.sum(p, 0)
     print 'np.max(p_sum):', np.max(p_sum)
     print 'np.min(p_sum):', np.min(p_sum)
+    print '5555555555555555555555555555'
+    u, alpha, sigma = update(X, p)
+    print 'After update:'
+    print 'u:', u
+    print 'alpha:', alpha
+    print 'sigma:', sigma
+    print '6666666666666666666666666666'
+    rating = calculate_rating(Ltab[-1], k, d, N)
+    print 'rating:', rating
+
     print 'diff:', after - now
     return image
 
@@ -239,8 +254,8 @@ def norm_pdf_multivariate(x, mu, sigma):
 # X, alpha, f -> p
 def calculate_prob(X, alpha, f):
     height, width, d = X.shape
-    K = alpha.shape[0]
-    p = np.empty([K, height, width])
+    k = alpha.shape[0]
+    p = np.empty([k, height, width])
     for ind_h in range(height):
         for ind_w in range(width):
             p[:, ind_h, ind_w] = alpha * f[:, ind_h, ind_w]
@@ -297,12 +312,67 @@ def should_stop(Ltab):
 
 # X, p -> u_new, alpha_new, sigma_new
 def update(X, p):
-    pass
+    u_new = update_means(X, p)
+    alpha_new = update_weights(p)
+    sigma_new = update_covariance_matrices(X, u_new, p)
+    return u_new, alpha_new, sigma_new
+
+
+# X, p -> u
+def update_means(X, p):
+    height, width, d = X.shape
+    k, height, width = p.shape
+    u = np.empty([k, d])
+    for i in range(k):
+        for j in range(d):
+            u[i, j] = np.sum(np.sum(X[:,:,j] * p[i], 1), 0)
+        u[i] /= np.sum(np.sum(X, 1), 0)
+
+    return u
+
+
+# p -> alpha
+def update_weights(p):
+    k, height, width = p.shape
+    total = height * width
+    alpha = np.empty(k)
+    alpha = np.sum(np.sum(p, 2), 1) / total
+    return alpha
+
+
+# X, u, p -> sigma
+def update_covariance_matrices(X, u, p):
+    height, width, d = X.shape
+    k, height, width = p.shape
+    sigma = np.empty([k, d, d])
+    for i in range(k):
+        p_sum = np.sum(p[i])
+        for ind_h in range(height):
+            for ind_w in range(width):
+                x = X[ind_h][ind_w]
+                x_u = np.matrix(x - u[i])
+                # ze wzgledu na reprezentacje, zmiana transpozycji
+                # na pierwszy argument
+                result = p[i][ind_h][ind_w] * (x_u.T * x_u)
+                sigma[i] += result
+        print 'sigma[i].shape:', sigma[i].shape
+        print 'p_sum.shape:', p_sum.shape
+        sigma[i] /= p_sum
+
+    return sigma
 
 
 # log_likelihood, k, d, N -> rating
 def calculate_rating(log_likelihood, k, d, N):
-    pass
+    mk = calculate_mk(k, d)
+    rating = log_likelihood - mk / 2.0 * math.log(N)
+    return rating
+
+
+# k, d -> mk
+def calculate_mk(k, d):
+    mk = (k - 1.0) + k * d + k * d * (d + 1) / 2.0
+    return mk
 
 
 # p -> p_best_regions
