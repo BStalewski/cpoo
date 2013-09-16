@@ -38,16 +38,18 @@
 Projekt polegał na zaimplementowaniu dwóch algorytmów służących do segmentacji obrazów na obszary:
 \begin{itemize}
 	\item algorytmu Otsu, wykonującego segmentację przez progowanie,
-	\item algorytmu ML-EM (ang. Maximum Likelihood Estimation Maximization), wykonującego segmentację przez klasteryzację. 
+	\item algorytmu ML-EM, wykonującego segmentację przez klasteryzację. 
 \end{itemize}
 
-\section{Krótki opis algorytmów}
+\section{Idee algorytmów}
 
 \subsection{Algorytm Otsu}
 
 Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, stanowi przykład progowania globalnego, w którym znalezione wartości progów są optymalne pod względem minimalizacji wariancji wewnątrzklasowej lub maksymalizacji wariancji międzyklasowej. Metoda Otsu osiąga dobre rezultaty na przykład dla obrazów o histogramach bimodalnych, czyli takich, gdzie możliwa jest reprezentacja histogramu przez dwa zachodzące na siebie rozkłady normalne o różnych wartościach średnich.
 
 \subsection{Algorytm ML-EM}
+
+Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) polega na iteracyjnym szacowaniu parametrów modelu mikstur Gaussa. W takim modelu każdy klaster jest reprezentowany jako rozkład normalny o pewnej wartości średniej i macierzy kowariancji. W przypadku niniejszego projektu przestrzenią przeszukiwań, w której osadzone są klastry, jest przestrzeń czterowymiarowa $(R-G, R-B, i, j)$, gdzie $R - G$ to różnica między składową $R$ oraz $G$ piksela, $R - B$ to --- analogicznie --- różnica między składową $R$ oraz $B$ piksela, $i$ numer wiersza piksela, $j$ numer kolumny piksela.
 
 \section{Testy algorytmu Otsu}
 
@@ -112,7 +114,7 @@ Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, s
   \centering
   \includegraphics[scale=.3, clip]{img/03_histogram.jpg}
 	\caption[]
-  {Histogram rysunku wejściowego z zaznaczonym jednym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg został dobrany dość dobrze, ponieważ dzieli histogram na mniej więcej równe połowy pod względem ilości piseli znajdujących się po lewej i prawej stronie względem progu.}
+  {Histogram rysunku wejściowego z zaznaczonym jednym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 120) został dobrany dość dobrze, ponieważ dzieli histogram na mniej więcej równe połowy pod względem ilości piseli znajdujących się po lewej i prawej stronie względem progu.}
 \end{figure}
 
 \subsection{Test algorytmu Otsu --- wybór czterech progów przy histogramie z siedmioma skupiskami}
@@ -184,7 +186,7 @@ Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, s
   \centering
   \includegraphics[scale=.3, clip]{img/04_histogram.jpg}
 	\caption[]
-  {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 150) został dobrany dość dobrze, ponieważ oddziela piksele najciemniejsze od najjaśniejszych.}
+  {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 150) został dobrany dość dobrze, ponieważ oddziela piksele najciemniejsze od najjaśniejszych, nia nachodząc na największe skupisko pikseli.}
 \end{figure}
 
 \section{Testy algorytmu ML-EM}
