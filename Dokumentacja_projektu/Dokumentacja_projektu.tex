@@ -51,6 +51,7 @@ Segmentacja metodą Otsu, której nazwa pochodzi od jej twórcy Nobuyuki Otsu, s
 
 Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) polega na iteracyjnym szacowaniu parametrów modelu mikstur Gaussa. W takim modelu każdy klaster jest reprezentowany jako rozkład normalny o pewnej wartości średniej i macierzy kowariancji. W przypadku niniejszego projektu przestrzenią przeszukiwań, w której osadzone są klastry, jest przestrzeń czterowymiarowa $(R-G, R-B, i, j)$, gdzie $R - G$ to różnica między składową $R$ oraz $G$ piksela, $R - B$ to --- analogicznie --- różnica między składową $R$ oraz $B$ piksela, $i$ numer wiersza piksela, $j$ numer kolumny piksela.
 
+\newpage
 \section{Testy algorytmu Otsu}
 
 \subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z dwoma skupiskami}
@@ -86,6 +87,7 @@ Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) pole
   {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Na podstawie histogramu da się zauważyć, że obraz wejściowy jest obrazem bimodalnym, czyli składającym się z pikseli, których jasności można zgrupować w dwóch skupiskach --- skupisku pikseli ciemnych (pikseli tła) i jasnych (pikseli pierwszego planu). Jak widać, próg (o wartości ok. 130) został dobrany dość dobrze, ponieważ znajduje się na środku pomiędzy oboma skupiskami.}
 \end{figure}
 
+\clearpage
 \subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z siedmioma skupiskami}
 
 \begin{figure}[!htb]
@@ -117,6 +119,7 @@ Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) pole
   {Histogram rysunku wejściowego z zaznaczonym jednym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 120) został dobrany dość dobrze, ponieważ dzieli histogram na mniej więcej równe połowy pod względem ilości piseli znajdujących się po lewej i prawej stronie względem progu.}
 \end{figure}
 
+\clearpage
 \subsection{Test algorytmu Otsu --- wybór czterech progów przy histogramie z siedmioma skupiskami}
 
 \begin{figure}[!htb]
@@ -156,6 +159,7 @@ Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) pole
   {Histogram rysunku wejściowego z zaznaczonymi czteroma progami, które zostały dobrane przez algorytm Otsu. Jak widać, progi zostały dobrane dość dobrze, ponieważ --- po pierwsze --- znajdują się mniej więcej na środku pomiędzy skupiskami i --- po drugie --- są od siebie oddalone w mniej więcej równych odstępach.}
 \end{figure}
 
+\clearpage
 \subsection{Test algorytmu Otsu --- wybór jednego progu przy histogramie z jednym skupiskiem}
 
 \begin{figure}[!htb]
@@ -189,6 +193,7 @@ Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) pole
   {Histogram rysunku wejściowego z zaznaczonym progiem, który został dobrany przez algorytm Otsu. Jak widać, próg (o wartości ok. 150) został dobrany dość dobrze, ponieważ oddziela piksele najciemniejsze od najjaśniejszych, nia nachodząc na największe skupisko pikseli.}
 \end{figure}
 
+\clearpage
 \section{Testy algorytmu ML-EM}
 
 \subsection{Test algorytmu ML-EM --- wybór pięciu obszarów}
@@ -223,6 +228,7 @@ Segmentacja metodą ML-EM (ang. Maximum Likelihood Estimation Maximization) pole
 \endminipage
 \end{figure}
 
+\clearpage
 \subsection{Test algorytmu ML-EM --- wybór dwóch obszarów}
 
 \begin{figure}[!htb]
